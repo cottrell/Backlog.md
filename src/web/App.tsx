@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import Layout from './components/Layout';
 import BoardPage from './components/BoardPage';
 import DocumentationDetail from './components/DocumentationDetail';
@@ -28,6 +28,29 @@ import { apiClient } from './lib/api';
 import { useHealthCheckContext } from './contexts/HealthCheckContext';
 import { getWebVersion } from './utils/version';
 import { collectArchivedMilestoneKeys, collectMilestoneIds, milestoneKey } from './utils/milestones';
+
+function QueryHandler({ tasks, onEditTask }: { tasks: Task[]; onEditTask: (task: Task) => void }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const highlight = searchParams.get('highlight');
+    if (highlight && tasks.length > 0) {
+      const task = tasks.find((t) => t.id.toLowerCase() === highlight.toLowerCase());
+      if (task) {
+        onEditTask(task);
+        setSearchParams(
+          (params) => {
+            params.delete('highlight');
+            return params;
+          },
+          { replace: true },
+        );
+      }
+    }
+  }, [searchParams, tasks, onEditTask, setSearchParams]);
+
+  return null;
+}
 
 const buildMilestoneAliasMap = (milestones: Milestone[], archivedMilestones: Milestone[]): Map<string, string> => {
   const aliasMap = new Map<string, string>();
@@ -472,6 +495,7 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <QueryHandler tasks={tasks} onEditTask={handleEditTask} />
         <Routes>
             <Route
             path="/"

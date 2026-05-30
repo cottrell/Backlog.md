@@ -30,7 +30,6 @@ export default function BoardPage({
 	isLoading,
 }: BoardPageProps) {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [highlightTaskId, setHighlightTaskId] = useState<string | null>(null);
 	const [laneMode, setLaneMode] = useState<LaneMode>('none');
 	const [milestoneFilter, setMilestoneFilter] = useState<string | null>(null);
 	const laneStorageKey = 'backlog.board.lane';
@@ -51,24 +50,6 @@ export default function BoardPage({
 			window.localStorage.setItem(laneStorageKey, nextLane);
 		}
 	}, [searchParams]);
-
-	useEffect(() => {
-		const highlight = searchParams.get('highlight');
-		if (highlight) {
-			setHighlightTaskId(highlight);
-			// Clear the highlight parameter after setting it
-			setSearchParams(params => {
-				params.delete('highlight');
-				return params;
-			}, { replace: true });
-		}
-	}, [searchParams, setSearchParams]);
-
-	// Clear highlight after it's been used
-	const handleEditTask = (task: Task) => {
-		setHighlightTaskId(null); // Clear highlight so popup doesn't reopen
-		onEditTask(task);
-	};
 
 	const handleLaneChange = (mode: LaneMode) => {
 		setLaneMode(mode);
@@ -121,9 +102,8 @@ export default function BoardPage({
 	return (
 		<div className="container mx-auto px-4 py-8 transition-colors duration-200">
 			<Board
-				onEditTask={handleEditTask}
+				onEditTask={onEditTask}
 				onNewTask={onNewTask}
-				highlightTaskId={highlightTaskId}
 				tasks={tasks}
 				onRefreshData={onRefreshData}
 				statuses={statuses}

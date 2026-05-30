@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { type Milestone, type Task } from '../../types';
 import { apiClient, type ReorderTaskPayload } from '../lib/api';
 import { buildLanes, DEFAULT_LANE_KEY, groupTasksByLaneAndStatus, type LaneMode } from '../lib/lanes';
@@ -13,7 +13,6 @@ import { SuccessToast } from './SuccessToast';
 interface BoardProps {
   onEditTask: (task: Task) => void;
   onNewTask: () => void;
-  highlightTaskId?: string | null;
   tasks: Task[];
   onRefreshData?: () => Promise<void>;
   statuses: string[];
@@ -47,7 +46,6 @@ const BOARD_FILTER_BUTTON_CLASS =
 const Board: React.FC<BoardProps> = ({
   onEditTask,
   onNewTask,
-  highlightTaskId,
   tasks,
   onRefreshData,
   statuses,
@@ -249,19 +247,6 @@ const Board: React.FC<BoardProps> = ({
     }
     return result;
   }, [tasks, milestoneFilter, canonicalMilestoneFilter, milestoneAliasToCanonical, filterAssignee, normalizedFilterLabels, filterPriority]);
-
-  // Handle highlighting a task (opening its edit popup)
-  useEffect(() => {
-    if (highlightTaskId && tasks.length > 0) {
-      const taskToHighlight = tasks.find(task => task.id === highlightTaskId);
-      if (taskToHighlight) {
-        // Use setTimeout to ensure the task is found and modal opens properly
-        setTimeout(() => {
-          onEditTask(taskToHighlight);
-        }, 100);
-      }
-    }
-  }, [highlightTaskId, tasks, onEditTask]);
 
   const handleTaskUpdate = async (taskId: string, updates: Partial<Task>) => {
     try {

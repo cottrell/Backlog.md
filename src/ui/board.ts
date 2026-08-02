@@ -176,7 +176,7 @@ function formatColumnLabel(status: string, count: number): string {
 }
 
 const DEFAULT_FOOTER_CONTENT =
-	" {cyan-fg}[Tab]{/} View | {cyan-fg}[N]{/} New | {cyan-fg}[/]{/} Search | {cyan-fg}[T/P/F/I]{/} Filter | {cyan-fg}[←→/↑↓]{/} Nav | {cyan-fg}[Enter]{/} Details | {cyan-fg}[E/M/C/A]{/} Edit/Move/Comp/Arch | {cyan-fg}[Y]{/} Yank | {cyan-fg}[?]{/} Help | {cyan-fg}[q]{/} Quit";
+	" {cyan-fg}[Tab]{/} View | {cyan-fg}[N]{/} New | {cyan-fg}[/]{/} Search | {cyan-fg}[T/P/F/I/R]{/} Filter | {cyan-fg}[←→/↑↓]{/} Nav | {cyan-fg}[Enter]{/} Details | {cyan-fg}[E/M/C/A]{/} Edit/Move/Comp/Arch | {cyan-fg}[Y]{/} Yank | {cyan-fg}[?]{/} Help | {cyan-fg}[q]{/} Quit";
 
 export function shouldRebuildColumns(current: ColumnData[], next: ColumnData[]): boolean {
 	if (current.length !== next.length) {
@@ -259,7 +259,9 @@ export async function renderBoardTui(
 			labelMatch?: LabelMatchMode;
 			milestoneFilter: string;
 			limit?: number;
+			ready?: boolean;
 		};
+		fullGraphTasks?: Task[];
 		availableLabels?: string[];
 		availableMilestones?: string[];
 		priorities?: string[];
@@ -273,6 +275,7 @@ export async function renderBoardTui(
 			labelMatch?: LabelMatchMode;
 			milestoneFilter: string;
 			limit?: number;
+			ready?: boolean;
 		}) => void;
 		milestoneMode?: boolean;
 		milestoneEntities?: Milestone[];
@@ -338,6 +341,7 @@ export async function renderBoardTui(
 			labelMatch: options?.filters?.labelMatch ?? "any",
 			milestoneFilter: options?.filters?.milestoneFilter ?? "",
 			limit: options?.filters?.limit,
+			ready: options?.filters?.ready ?? false,
 		};
 		const runWithModalGuard = async <T>(operation: () => Promise<T>): Promise<T> => {
 			modalOpen = true;
@@ -370,7 +374,8 @@ export async function renderBoardTui(
 					sharedFilters.priorityFilter ||
 					sharedFilters.labelFilter.length > 0 ||
 					sharedFilters.milestoneFilter ||
-					sharedFilters.limit !== undefined,
+					sharedFilters.limit !== undefined ||
+					sharedFilters.ready,
 			);
 		const hasMoveBlockingSharedFilters = () => hasMoveBlockingBoardFilters(sharedFilters);
 		const emitFilterChange = () => {
@@ -383,6 +388,7 @@ export async function renderBoardTui(
 				labelMatch: sharedFilters.labelMatch,
 				milestoneFilter: sharedFilters.milestoneFilter,
 				limit: sharedFilters.limit,
+				ready: sharedFilters.ready,
 			});
 		};
 		const getFilteredTasks = (): Task[] => {
@@ -402,6 +408,9 @@ export async function renderBoardTui(
 						labelMatch: sharedFilters.labelMatch,
 						milestone: sharedFilters.milestoneFilter || undefined,
 						resolveMilestoneLabel,
+						ready: sharedFilters.ready,
+						statuses: configuredWorkflowStatuses,
+						fullGraphTasks: options?.fullGraphTasks,
 					},
 					searchIndex,
 				);
@@ -1068,6 +1077,14 @@ export async function renderBoardTui(
 		screen.key(["f", "F"], () => {
 			if (popupOpen || filterPopupOpen || modalOpen || moveOp) return;
 			void openFilterPicker("labels");
+		});
+
+		screen.key(["r", "R"], () => {
+			if (popupOpen || filterPopupOpen || modalOpen || moveOp) return;
+			sharedFilters.ready = !sharedFilters.ready;
+			emitFilterChange();
+			showTransientFooter(` {cyan-fg}Ready filter ${sharedFilters.ready ? "on" : "off"}{/}`, 3000, false);
+			renderView();
 		});
 
 		screen.key(["i", "I"], () => {

@@ -99,7 +99,7 @@ export default function BoardPage({
 		}, { replace: true });
 	};
 
-	const handleFiltersChange = (filters: { assignee: string; labels: string[]; priority: string; taskType: string }) => {
+	const handleFiltersChange = (filters: { assignee: string; labels: string[]; priority: string; taskType: string; ready: boolean }) => {
 		setSearchParams(params => {
 			if (filters.assignee) {
 				params.set('assignee', filters.assignee);
@@ -124,6 +124,11 @@ export default function BoardPage({
 			} else {
 				params.delete('type');
 			}
+			if (filters.ready) {
+				params.set('ready', 'true');
+			} else {
+				params.delete('ready');
+			}
 			return params;
 		}, { replace: true });
 	};
@@ -137,6 +142,7 @@ export default function BoardPage({
 	const filterPriority = resolvePriorityValue(rawFilterPriority, availablePriorities) ?? '';
 	const rawFilterType = searchParams.get('type') ?? '';
 	const filterType = resolveTaskTypeValue(rawFilterType, availableTypes) ?? '';
+	const filterReady = searchParams.get('ready') === 'true';
 
 	useEffect(() => {
 		if (isLoading || (rawFilterPriority === filterPriority && rawFilterType === filterType)) {
@@ -180,6 +186,7 @@ export default function BoardPage({
 				filterPriority={filterPriority}
 				availablePriorities={availablePriorities}
 				filterType={filterType}
+				filterReady={filterReady}
 				availableTypes={availableTypes}
 				onFiltersChange={handleFiltersChange}
 				hideEmptyColumns={hideEmptyColumns}

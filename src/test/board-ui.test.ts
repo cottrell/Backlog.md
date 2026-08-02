@@ -75,6 +75,7 @@ describe("Board TUI Logic", () => {
 			expect(hasMoveBlockingBoardFilters({ ...baseFilters, searchQuery: "auth" })).toBe(true);
 			expect(hasMoveBlockingBoardFilters({ ...baseFilters, typeFilter: ["bug"] })).toBe(true);
 			expect(hasMoveBlockingBoardFilters({ ...baseFilters, labelFilter: ["bug"] })).toBe(true);
+			expect(hasMoveBlockingBoardFilters({ ...baseFilters, ready: true })).toBe(true);
 		});
 	});
 });

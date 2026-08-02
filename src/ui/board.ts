@@ -49,6 +49,7 @@ type BoardSharedFilters = {
 	labelFilter: string[];
 	milestoneFilter: string;
 	limit?: number;
+	ready?: boolean;
 };
 
 export function hasMoveBlockingBoardFilters(filters: BoardSharedFilters): boolean {
@@ -58,7 +59,8 @@ export function hasMoveBlockingBoardFilters(filters: BoardSharedFilters): boolea
 			filters.priorityFilter ||
 			filters.labelFilter.length > 0 ||
 			filters.milestoneFilter ||
-			filters.limit !== undefined,
+			filters.limit !== undefined ||
+			filters.ready,
 	);
 }
 

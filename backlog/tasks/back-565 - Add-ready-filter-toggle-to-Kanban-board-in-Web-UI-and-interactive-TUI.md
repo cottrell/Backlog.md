@@ -5,7 +5,7 @@ status: Done
 assignee:
   - '@codex'
 created_date: '2026-08-02 20:32'
-updated_date: '2026-08-02 20:43'
+updated_date: '2026-08-02 20:45'
 labels:
   - tui
   - web
@@ -40,16 +40,20 @@ Let users filter Kanban boards to tasks whose dependencies are satisfied, using 
 
 <!-- SECTION:PLAN:BEGIN -->
 1. Apply the isolated Kanban ready-filter controls from the prior combined branch. 2. Verify browser URL state and interactive TUI shortcut behavior against existing readiness semantics. 3. Run focused and full validation, then finalize the task for a dedicated draft PR.
+
+4. Treat ready-only filtering as move-blocking and add a regression test for the interactive board.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
 
 <!-- SECTION:NOTES:BEGIN -->
 Implemented the browser Ready only toggle with URL state and the interactive TUI R shortcut with help text. The branch is stacked on BACK-546 for the shared readiness semantics. Verified with full bun test, bunx tsc --noEmit, bun run check ., and bun run build.
+
+Review fix: ready-only filtering now blocks the interactive TUI move command, preventing ordinal moves against hidden tasks. Verified with src/test/board-ui.test.ts, TypeScript, and Biome.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
-Added a ready-only Kanban filter for the browser and interactive TUI, preserving URL state and existing readiness semantics. Verified by full test, TypeScript, Biome, and production-build checks.
+Added the ready-only Kanban filter and corrected its interactive TUI move safety: ready-only filtering now blocks moves against hidden tasks. Verified with full prior validation plus focused board tests, TypeScript, and Biome.
 <!-- SECTION:FINAL_SUMMARY:END -->

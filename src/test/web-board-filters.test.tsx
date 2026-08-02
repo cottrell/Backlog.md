@@ -301,6 +301,7 @@ describe("Web board filters", () => {
 		} finally {
 			apiClient.reorderTask = originalReorderTask;
 		}
+	});
 	it("filters to ready tasks with the Ready only button and preserves the setting in the URL", async () => {
 		const readyTask = createTask({ id: "task-ready", title: "Ready task" });
 		const blockedTask = createTask({ id: "task-blocked", title: "Blocked task", dependencies: ["task-ready"] });

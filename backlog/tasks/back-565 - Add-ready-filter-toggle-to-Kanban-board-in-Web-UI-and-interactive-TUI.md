@@ -1,10 +1,11 @@
 ---
 id: BACK-565
 title: Add ready filter toggle to Kanban board in Web UI and interactive TUI
-status: In Progress
+status: Done
 assignee:
   - '@codex'
 created_date: '2026-08-02 20:32'
+updated_date: '2026-08-02 20:43'
 labels:
   - tui
   - web
@@ -22,17 +23,17 @@ Let users filter Kanban boards to tasks whose dependencies are satisfied, using 
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 The browser Kanban board exposes a Ready only toggle that filters to ready tasks and preserves the setting in the URL.
-- [ ] #2 The interactive Kanban board exposes an R shortcut that toggles ready-only filtering and is documented in help.
-- [ ] #3 Ready-only filtering uses the existing readiness semantics and does not mutate task state or ordinal ordering.
-- [ ] #4 Automated tests cover browser and interactive TUI ready-only filter behavior.
+- [x] #1 The browser Kanban board exposes a Ready only toggle that filters to ready tasks and preserves the setting in the URL.
+- [x] #2 The interactive Kanban board exposes an R shortcut that toggles ready-only filtering and is documented in help.
+- [x] #3 Ready-only filtering uses the existing readiness semantics and does not mutate task state or ordinal ordering.
+- [x] #4 Automated tests cover browser and interactive TUI ready-only filter behavior.
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 bunx tsc --noEmit passes when TypeScript touched
-- [ ] #2 bun run check . passes when formatting/linting touched
-- [ ] #3 bun test (or scoped test) passes
+- [x] #1 bunx tsc --noEmit passes when TypeScript touched
+- [x] #2 bun run check . passes when formatting/linting touched
+- [x] #3 bun test (or scoped test) passes
 <!-- DOD:END -->
 
 ## Implementation Plan
@@ -40,3 +41,15 @@ Let users filter Kanban boards to tasks whose dependencies are satisfied, using 
 <!-- SECTION:PLAN:BEGIN -->
 1. Apply the isolated Kanban ready-filter controls from the prior combined branch. 2. Verify browser URL state and interactive TUI shortcut behavior against existing readiness semantics. 3. Run focused and full validation, then finalize the task for a dedicated draft PR.
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Implemented the browser Ready only toggle with URL state and the interactive TUI R shortcut with help text. The branch is stacked on BACK-546 for the shared readiness semantics. Verified with full bun test, bunx tsc --noEmit, bun run check ., and bun run build.
+<!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Added a ready-only Kanban filter for the browser and interactive TUI, preserving URL state and existing readiness semantics. Verified by full test, TypeScript, Biome, and production-build checks.
+<!-- SECTION:FINAL_SUMMARY:END -->
